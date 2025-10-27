@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mdq:check xmlns:mdq="https://nceas.ucsb.edu/mdqe/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://nceas.ucsb.edu/mdqe/v1 ../schemas/schema1.xsd">
+  <id>resource.abstract.present</id>
+  <name>Resource Abstract Present</name>
+  <description>Check that a dataset abstract/description is present and meaningful.</description>
+  <type>Findable</type>
+  <level>REQUIRED</level>
+  <environment>python</environment>
+  <code><![CDATA[
+def call():
+  global output
+  global status
+  global abstract
+         
+  import metadig.variable as mvar
+
+  # Check if abstract exists
+  if 'abstract' not in globals() or abstract is None:
+    output = "A dataset abstract/description was not found."
+    status = "FAILURE"
+    return False
+
+  # Convert to string if needed
+  abstract = mvar.toUnicode(abstract)
+  
+  # Check if blank
+  if mvar.isBlank(abstract):
+    output = "The dataset abstract is blank."   
+    status = "FAILURE"
+    return False
+  
+  # Check minimum length (at least 20 characters for meaningful description)
+  abstract_str = abstract.strip() if isinstance(abstract, str) else str(abstract)
+  if len(abstract_str) < 20:
+    output = f"The dataset abstract is too short ({len(abstract_str)} characters). Minimum 20 characters recommended for meaningful description."
+    status = "FAILURE"
+    return False
+  
+  # Success
+  word_count = len(abstract_str.split())
+  if len(abstract_str) > 100:
+    display_abstract = abstract_str[:100] + "..."
+  else:
+    display_abstract = abstract_str
+    
+  output = f"Dataset abstract found: '{display_abstract}' ({len(abstract_str)} characters, {word_count} words)"
+  status = "SUCCESS"
+  return True
+      ]]></code>
+  <selector>
+    <name>abstract</name>
+    <xpath>
+        /eml/dataset/abstract//text()[normalize-space()] |
+        /resource/descriptions/description[@descriptionType='Abstract']//text()[normalize-space()] |
+        /*/identificationInfo/MD_DataIdentification/abstract//text()[normalize-space()]
+      </xpath>
+  </selector>
+  <dialect>
+    <name>DataCite 4</name>
+    <xpath>boolean(/*[local-name() = 'resource'])</xpath>
+  </dialect>
+  <dialect>
+    <name>Ecological Metadata Language</name>
+    <xpath>boolean(/*[local-name() = 'eml'])</xpath>
+  </dialect>
+  <dialect>
+    <name>ISO 19115 and ISO 19115-2 / ISO 19139 and ISO 19139-2</name>
+    <xpath>boolean(/*[local-name() = 'MI_Metadata' or local-name() = 'MD_Metadata'])</xpath>
+  </dialect>
+</mdq:check>

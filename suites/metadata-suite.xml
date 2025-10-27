@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mdq:suite xmlns:mdq="https://nceas.ucsb.edu/mdqe/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://nceas.ucsb.edu/mdqe/v1 ../schemas/schema1.xsd">
+  <id>metadata.offline.suite</id>
+  <name>Offline Metadata Quality Suite</name>
+  <description>
+    A suite of metadata quality checks that work entirely offline.
+    No network access required.
+    All checks use Python and validate metadata structure and content.
+  </description>
+  
+  <!-- FINDABLE: Checks for metadata discoverability -->
+  <check>
+    <id>resource.title.present</id>
+    <type>Findable</type>
+    <level>REQUIRED</level>
+  </check>
+  
+  <check>
+    <id>resource.abstract.present</id>
+    <type>Findable</type>
+    <level>REQUIRED</level>
+  </check>
+  
+  <check>
+    <id>resource.creator.present</id>
+    <type>Findable</type>
+    <level>REQUIRED</level>
+  </check>
+  
+  <!-- ACCESSIBLE: Checks for data quality and consistency -->
+  <check>
+    <id>entity.attributeName.differs-2.0.0</id>
+    <type>Accessible</type>
+    <level>REQUIRED</level>
+  </check>
+
+  <!-- INTEROPERABLE: Checks for metadata standards compliance -->
+    <check>
+      <id>resource.keywords.present-2.0.0</id>
+      <type>Interoperable</type>
+        <level>REQUIRED</level>
+    </check>
+  
+    <check>
+      <id>resource.temporalCoverage.present-2.0.0</id>
+      <type>Interoperable</type>
+        <level>REQUIRED</level>
+    </check>
+
+  <!-- REUSABLE: Checks for licensing and usage information -->
+  <check>
+    <id>resource.license.present-2.0.0</id>
+    <type>Reusable</type>
+    <level>REQUIRED</level>
+  </check>
+</mdq:suite>
