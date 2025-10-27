@@ -46,7 +46,7 @@ if [ -d ".venv" ]; then
     source .venv/bin/activate
 fi
 
-# Step 1: Convert Dataverse JSON to EML
+# Convert Dataverse JSON to EML
 echo -e "Fetching metadata and converting to EML..."
 python scripts/json_to_eml.py \
     --base-url "$DATAVERSE_URL" \
@@ -56,5 +56,27 @@ python scripts/json_to_eml.py \
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}Failed to fetch metadata${NC}"
+    exit 1
+fi
+
+# Generate system metadata stub
+echo -e "Generating system metadata stub..."
+python -c "
+import sys
+sys.path.insert(0, 'scripts')
+from dataverse_to_metadig import write_sysmeta_stub
+
+write_sysmeta_stub(
+    identifier='$DOI',
+    authoritative_member_node='urn:node:DATAVERSE',
+    rights_holder='public',
+    file_name='$EML_FILE',
+    out_path='$SYSMETA_FILE',
+    format_id='https://eml.ecoinformatics.org/eml-2.2.0'
+)
+"
+
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Failed to generate system metadata${NC}"
     exit 1
 fi
