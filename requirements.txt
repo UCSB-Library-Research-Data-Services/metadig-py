@@ -30,6 +30,7 @@ poetry==2.2.1
 poetry-core==2.2.1
 pycparser==2.23
 pyproject_hooks==1.2.0
+python-dotenv==1.2.1
 RapidFuzz==3.14.1
 requests==2.32.5
 requests-toolbelt==1.0.0
