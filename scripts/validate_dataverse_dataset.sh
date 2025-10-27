@@ -80,3 +80,27 @@ if [ $? -ne 0 ]; then
     echo -e "${RED}Failed to generate system metadata${NC}"
     exit 1
 fi
+
+#Run MetaDIG quality checks
+echo -e "Running quality checks..."
+echo ""
+
+python -m metadig.metadigclient \
+    -runsuite \
+    -suitepath "$SUITE_PATH" \
+    -mdoc "$EML_FILE" \
+    -sysmeta "$SYSMETA_FILE" \
+    -checkfolder "$CHECK_FOLDER" \
+    -sp "$HASHSTORE_PATH"
+
+if [ $? -eq 0 ]; then
+    echo ""
+    echo -e "${GREEN}Validation complete!${NC}"
+    echo ""
+    echo "Generated files:"
+    echo "  - $EML_FILE (metadata)"
+    echo "  - $SYSMETA_FILE (system metadata)"
+else
+    echo -e "${RED}Validation failed${NC}"
+    exit 1
+fi
