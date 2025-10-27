@@ -91,7 +91,7 @@ python -m metadig.metadigclient \
     -mdoc "$EML_FILE" \
     -sysmeta "$SYSMETA_FILE" \
     -checkfolder "$CHECK_FOLDER" \
-    -sp "$HASHSTORE_PATH"
+    -sp "$HASHSTORE_PATH"  2>/dev/null
 
 if [ $? -eq 0 ]; then
     echo ""
