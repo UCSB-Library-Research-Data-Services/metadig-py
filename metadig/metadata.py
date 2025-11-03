@@ -214,7 +214,7 @@ def read_csv_with_metadata(
                 pandas.read_csv(
                     io.StringIO(d_read),
                     delimiter=fd,
-                    header=pd_header_val,
+                    skiprows=pd_header_val,
                     encoding=d_encoding,
                     na_filter=nan_filter,
                     dtype=ty,
@@ -226,7 +226,7 @@ def read_csv_with_metadata(
                 pandas.read_csv(
                     io.StringIO(d_read),
                     delimiter=fd,
-                    header=pd_header_val,
+                    skiprows=pd_header_val,
                     na_filter=nan_filter,
                 ),
                 None,
