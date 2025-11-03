@@ -105,7 +105,7 @@ def get_data_pids(identifier: str, member_node: str):
     """
     member_node_url = get_member_node_url(member_node)
     encoded_identifier = urllib.parse.quote(identifier)
-    solr_query = f"/query/solr/?q=isDocumentedBy:%22{encoded_identifier}%22&fl=id"
+    solr_query = f"/query/solr/?q=isDocumentedBy:%22{encoded_identifier}%22&fl=id&rows=1000"
     query_url = member_node_url + solr_query
 
     try:
