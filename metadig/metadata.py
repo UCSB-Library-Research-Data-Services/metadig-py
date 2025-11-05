@@ -161,10 +161,11 @@ def read_csv_with_metadata(
     """Uses pandas to read in a csv with given field delimiter and header rows to skip
 
     :param str or bytes d_read: RData as read in from the stream
-    :param str fd: ield delimiter from metadata
+    :param str fd: field delimiter from metadata
     :param int header_line: Number of rows to skip
     :param str d_encoding: Encoding type to use to read the given bytes
-    :param dtype_string: Whether to coerce all column types to string
+    :param bool nan_filter: Whether to detect missing value markers
+    :param bool dtype_string: Whether to coerce all column types to string
 
     :return: A tuple containing:
         - df: Pandas data.frame with data
