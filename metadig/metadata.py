@@ -366,3 +366,25 @@ def escape_for_markdown(string: str):
         f"\\{character}" if character in markdown_chars_to_escape else character
         for character in string
     )
+
+def eml_to_strptime(fmt):
+    fmt = re.sub(r'\b(HH|SS)\b', lambda m: m.group(0).lower(), fmt)
+    fmt = re.sub(
+        r'(?<=[:])\s*(MM|M)\b',
+        lambda m: m.group(0).lower(),
+        fmt
+    )
+    replacements = [
+        ("YYYY", "%Y"),
+        ("YY", "%y"),
+        ("MM", "%m"),
+        ("M", "%m"),
+        ("DD", "%d"),
+        ("D", "%d"),
+        ("hh", "%H"),
+        ("mm", "%M"),
+        ("ss", "%S")
+    ]
+    for old, new in replacements:
+        fmt = fmt.replace(old, new)
+    return fmt
