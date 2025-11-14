@@ -367,13 +367,16 @@ def escape_for_markdown(string: str):
         for character in string
     )
 
+
 def eml_to_strptime(fmt):
-    fmt = re.sub(r'\b(HH|SS)\b', lambda m: m.group(0).lower(), fmt)
-    fmt = re.sub(
-        r'(?<=[:])\s*(MM|M)\b',
-        lambda m: m.group(0).lower(),
-        fmt
-    )
+    """Converts EML date-time format to strptime format for pandas conversions. Eg: YYYY-MM-DD to %Y-%m-%d
+
+    :param string str: String to convert
+    :return: A string converted to strptime format
+    :rtype: string
+    """
+    fmt = re.sub(r"\b(HH|SS)\b", lambda m: m.group(0).lower(), fmt)
+    fmt = re.sub(r"(?<=[:])\s*(MM|M)\b", lambda m: m.group(0).lower(), fmt)
     replacements = [
         ("YYYY", "%Y"),
         ("YY", "%y"),
@@ -383,7 +386,7 @@ def eml_to_strptime(fmt):
         ("D", "%d"),
         ("hh", "%H"),
         ("mm", "%M"),
-        ("ss", "%S")
+        ("ss", "%S"),
     ]
     for old, new in replacements:
         fmt = fmt.replace(old, new)
