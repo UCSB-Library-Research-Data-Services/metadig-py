@@ -335,6 +335,9 @@ def detect_text_encoding(raw: bytes):
     # First detect the encoding type
     detected_encoding_result = chardet.detect(raw)
     encoding = detected_encoding_result.get("encoding")
+    if encoding == None:
+        encoding_msg = "The encoding was unable to be confidently interpreted. The data may be insufficient, or too ambiguous, to determine."
+        return encoding, encoding_msg
     # Now try to decode it
     try:
         raw.decode(encoding)
