@@ -78,7 +78,7 @@ def find_eml_entity(doc, identifier, file_name):
     root = ET.fromstring(doc)
 
     # Search through dataTable and otherEntity elements
-    for element in root.findall(".//dataTable") + root.findall(".//otherEntity"):
+    for element in root.findall(".//dataTable") + root.findall(".//otherEntity") + root.findall(".//spatialVector"):
         # Check if identifier matches the id element
         id_attr = element.attrib.get("id")
         if id_attr is not None and id_attr == identifier.replace(":", "-"):
