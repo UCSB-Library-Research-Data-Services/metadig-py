@@ -95,3 +95,6 @@ hashstore/*
 
 .venv/
 .DS_Store
+
+tests/
+doi_*
