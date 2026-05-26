@@ -1,0 +1,3 @@
+[submodule "metadig-checks"]
+	path = metadig-checks
+	url = git@github.com:NCEAS/metadig-checks.git
