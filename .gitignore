@@ -92,3 +92,5 @@ ENV/
 # HashStore settings
 # Allow hashstore/ and its immediate subfolders
 hashstore/*
+
+.venv/
