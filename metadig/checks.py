@@ -257,7 +257,15 @@ def run_check(
     sysmeta_check_vars = get_sysmeta_vars(metadata_sysmeta_path)
     identifier = sysmeta_check_vars.get("identifier")
     auth_mn_node = sysmeta_check_vars.get("authoritative_member_node")
-    data_pids = get_data_pids(identifier, auth_mn_node)
+    
+    # Try to get data PIDs from DataONE, but don't fail if network is unavailable
+    try:
+        data_pids = get_data_pids(identifier, auth_mn_node)
+    except Exception:
+        # If we can't reach DataONE (network issues, SSL errors, etc.),
+        # just use an empty list. Most metadata checks don't need data PIDs.
+        data_pids = []
+    
     # TODO: Potential Optimization Point
     # `variables-congruent` is the only check at this time that requires it, and seems
     # like we're adding a lot of overhead for just one check.
