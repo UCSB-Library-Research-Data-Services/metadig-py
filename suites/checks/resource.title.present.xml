@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mdq:check xmlns:mdq="https://nceas.ucsb.edu/mdqe/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://nceas.ucsb.edu/mdqe/v1 ../schemas/schema1.xsd">
+  <id>resource.title.present</id>
+  <name>Resource Title Present</name>
+  <description>Check that a dataset title is present and not empty.</description>
+  <type>Findable</type>
+  <level>REQUIRED</level>
+  <environment>python</environment>
+  <code><![CDATA[
+def call():
+  global output
+  global status
+  global title
+         
+  import metadig.variable as mvar
+
+  # Check if title exists
+  if 'title' not in globals() or title is None:
+    output = "A dataset title was not found."
+    status = "FAILURE"
+    return False
+
+  # Convert to string if needed
+  title = mvar.toUnicode(title)
+  
+  # Check if blank
+  if mvar.isBlank(title):
+    output = "The dataset title is blank."   
+    status = "FAILURE"
+    return False
+  
+  # Check minimum length
+  title_str = title.strip() if isinstance(title, str) else str(title)
+  if len(title_str) < 5:
+    output = f"The dataset title is too short ({len(title_str)} characters). Minimum 5 characters recommended."
+    status = "FAILURE"
+    return False
+  
+  # Success
+  if len(title_str) > 50:
+    display_title = title_str[:50] + "..."
+  else:
+    display_title = title_str
+    
+  output = f"Dataset title found: '{display_title}' ({len(title_str)} characters)"
+  status = "SUCCESS"
+  return True
+      ]]></code>
+  <selector>
+    <name>title</name>
+    <xpath>
+        /eml/dataset/title//text()[normalize-space()] |
+        /resource/titles/title//text()[normalize-space()] |
+        /*/identificationInfo/MD_DataIdentification/citation/CI_Citation/title//text()[normalize-space()]
+      </xpath>
+  </selector>
+  <dialect>
+    <name>DataCite 4</name>
+    <xpath>boolean(/*[local-name() = 'resource'])</xpath>
+  </dialect>
+  <dialect>
+    <name>Ecological Metadata Language</name>
+    <xpath>boolean(/*[local-name() = 'eml'])</xpath>
+  </dialect>
+  <dialect>
+    <name>ISO 19115 and ISO 19115-2 / ISO 19139 and ISO 19139-2</name>
+    <xpath>boolean(/*[local-name() = 'MI_Metadata' or local-name() = 'MD_Metadata'])</xpath>
+  </dialect>
+</mdq:check>

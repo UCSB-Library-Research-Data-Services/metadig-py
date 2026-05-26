@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mdq:check xmlns:mdq="https://nceas.ucsb.edu/mdqe/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://nceas.ucsb.edu/mdqe/v1 ../schemas/schema1.xsd">
+  <id>resource.creator.present</id>
+  <name>Resource Creator Present</name>
+  <description>Check that at least one creator/author is specified for the dataset.</description>
+  <type>Findable</type>
+  <level>REQUIRED</level>
+  <environment>python</environment>
+  <code><![CDATA[
+def call():
+  global output
+  global status
+  global creator
+         
+  import metadig.variable as mvar
+
+  # Check if creator exists
+  if 'creator' not in globals() or creator is None:
+    output = "No dataset creator/author was found."
+    status = "FAILURE"
+    return False
+
+  # Convert to list if single value
+  if isinstance(creator, str):
+    creator = [creator]
+  
+  # Filter out empty values
+  valid_creators = []
+  for c in creator:
+    c_str = mvar.toUnicode(c)
+    if not mvar.isBlank(c_str):
+      valid_creators.append(c_str.strip())
+  
+  if len(valid_creators) == 0:
+    output = "Creator field exists but all values are blank."
+    status = "FAILURE"
+    return False
+  
+  # Success
+  if len(valid_creators) == 1:
+    output = f"1 creator found: {valid_creators[0][:50]}"
+  else:
+    output = f"{len(valid_creators)} creators found: {', '.join(valid_creators[:3])}"
+    if len(valid_creators) > 3:
+      output += f", and {len(valid_creators) - 3} more"
+  
+  status = "SUCCESS"
+  return True
+      ]]></code>
+  <selector>
+    <name>creator</name>
+    <xpath>
+        /eml/dataset/creator/individualName/surName//text()[normalize-space()] |
+        /eml/dataset/creator/organizationName//text()[normalize-space()] |
+        /resource/creators/creator/creatorName//text()[normalize-space()] |
+        /*/identificationInfo/MD_DataIdentification/citation/CI_Citation/citedResponsibleParty/CI_ResponsibleParty[role/CI_RoleCode='originator']/individualName//text()[normalize-space()] |
+        /*/identificationInfo/MD_DataIdentification/citation/CI_Citation/citedResponsibleParty/CI_ResponsibleParty[role/CI_RoleCode='originator']/organisationName//text()[normalize-space()]
+      </xpath>
+  </selector>
+  <dialect>
+    <name>DataCite 4</name>
+    <xpath>boolean(/*[local-name() = 'resource'])</xpath>
+  </dialect>
+  <dialect>
+    <name>Ecological Metadata Language</name>
+    <xpath>boolean(/*[local-name() = 'eml'])</xpath>
+  </dialect>
+  <dialect>
+    <name>ISO 19115 and ISO 19115-2 / ISO 19139 and ISO 19139-2</name>
+    <xpath>boolean(/*[local-name() = 'MI_Metadata' or local-name() = 'MD_Metadata'])</xpath>
+  </dialect>
+</mdq:check>
